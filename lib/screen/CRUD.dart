@@ -11,6 +11,8 @@ class CrudOperations extends StatefulWidget {
 class _CrudOperationsState extends State<CrudOperations> {
  TextEditingController controller = TextEditingController();
   List<String> name = ["AKHTIYAR", "MASOOD"];
+
+  int ? editIndex ;
   @override
   Widget build(BuildContext context) {
 
@@ -18,7 +20,6 @@ class _CrudOperationsState extends State<CrudOperations> {
       body: Padding(
         padding: const EdgeInsets.all(8.0),
         child: Column(
-
           children: [
             SizedBox(height: 10,),
             TextField(
@@ -31,11 +32,22 @@ class _CrudOperationsState extends State<CrudOperations> {
             SizedBox(height: 10,),
             ElevatedButton(onPressed: (){
               setState(() {
+
                 if (controller.text.trim().isEmpty) return;
-                name.add(controller.text);
+                setState(() {
+                  if (editIndex == null){
+                    name.add(controller.text);
+                  } else{
+                    name[editIndex!] = controller.text;
+                    editIndex = null;
+                  }
+                });
+
                 controller.clear();
-});            }, child: Text("Add Item")),
+              });} ,child:  (editIndex == null) ? Text("Add Item"): Text("Update Item")),
             SizedBox(height: 10,),
+
+
             Expanded(child: ListView.builder(
                 itemCount: name.length,
                 itemBuilder: (context, index){
@@ -45,7 +57,14 @@ class _CrudOperationsState extends State<CrudOperations> {
                   trailing: Row(
                     mainAxisSize: MainAxisSize.min,
                     children: [
-                      Icon(Icons.edit),
+                      InkWell(
+                          onTap: (){
+                            setState(() {
+                              editIndex = index;
+                              controller.text = name[index];
+                            });
+                          }
+                          ,child: Icon(Icons.edit)),
                       InkWell(
                           onTap: (){
                             setState(() {
